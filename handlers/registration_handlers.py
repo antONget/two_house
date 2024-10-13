@@ -195,11 +195,11 @@ async def process_aristarch(message: Message, bot: Bot, state: FSMContext):
 # Если пользователя нет в БД
     chek_in_user_tg_id = await rq.chek_in_user_tg_id(tg_id=message.chat.id)
     if not chek_in_user_tg_id:
-        data |= {'tg_id': message.chat.id}
+        data = {'tg_id': message.chat.id}
         if message.chat.username:
-            data |= {'username': message.chat.username}
+            data = {'username': message.chat.username}
         else:
-            data |= {'username': ''}
+            data = {'username': ''}
         logging.info(f"process_aristarch --- data AFTER ADD = {data} --- data_state = {data_state}" )
         await rq.add_new_user(data=data)
 
