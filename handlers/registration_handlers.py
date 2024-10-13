@@ -54,7 +54,7 @@ async def process_start_command(message: Message,  state: FSMContext):
         logging.info(f'current_state = {current_state}')
 
     else:
-        await process_aristarch(message=message, state=state)
+        await process_aristarch(message=message, state=state, bot: Bot)
 
 @router.message(F.text.startswith('дом '))
 async def set_house(message: Message, state: FSMContext):
