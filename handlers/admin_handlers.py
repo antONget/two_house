@@ -59,8 +59,8 @@ async def del_user_in_admin_modetg(message: Message, bot: Bot):
 async def change_id_group(message: Message, bot: Bot):
     logging.info(f'change_id_group')
 
-    id_group = message.text.split(' ')[-1]
-
+    id_group_ = message.text.split(' ')[-1]
+    id_group = await rq.get_id_group()
     user_channel_status = await bot.get_chat_member(chat_id=id_group, user_id=message.from_user.id)
 
     logging.info(f"user_channel_status.status = {user_channel_status.status}")
@@ -68,15 +68,14 @@ async def change_id_group(message: Message, bot: Bot):
     if user_channel_status.status != 'left':
 
         try:
-            channel_id = int(id_group)
+            channel_id = int(id_group_)
         except:
             await message.answer(text='Пришлите id канала.  ID должно быть целым числом')
             return
         channel = get_telegram_user(channel_id, config.tg_bot.token)# состоит ли бот в это группе
         if 'result' in channel:
             await rq.set_id_group(current_value=channel_id)
-            await message.answer(text=f'Вы установили id={channel_id}'
-                                    )
+            await message.answer(text=f'Вы установили id={channel_id}')
         else:
             await message.answer(text=f'id={channel_id} не корректен, или бот не состоит в группе')
 
