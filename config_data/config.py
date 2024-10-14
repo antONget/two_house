@@ -15,7 +15,7 @@ class Config:
 
 
 
-def load_config(path: str | None = None) -> Config:
+def load_config(path: str = None) -> Config:
     env = Env()
     env.read_env(path)
     return Config(
