@@ -190,16 +190,16 @@ async def process_show_guide_news(message: Message, bot: Bot, state: FSMContext)
 
     else:
         await message.answer(text='Функционал доступен только администраторам')
-        await process_aristarch(message=message, state=state)
+        await process_aristarch(message=message, state=state, bot=bot)
 
 
 
 
 # нажатие на Инлайн кнопку НЕТ в админ режиме для отказа от редактирования новостей и справочника
 @router.callback_query(F.data.startswith('no_'))
-async def process_no_change_guide_or_news_go_to_aristarch(clb: CallbackQuery, state: FSMContext):
+async def process_no_change_guide_or_news_go_to_aristarch(clb: CallbackQuery, state: FSMContext, bot: Bot):
     logging.info(f'process_no_change_guide_or_news_go_to_aristarch')
-    await process_aristarch(message=clb.message, state=state)
+    await process_aristarch(message=clb.message, state=state, bot=bot)
 
 
 # нажатие на Инлайн кнопку ДА в админ режиме для редактирования новостей и справочника
@@ -251,7 +251,7 @@ async def process_capture_change_guide_news(message: Message, bot: Bot, state: F
 
     await message.answer(text='Контент в разделе обнавлен')
     await state.clear()
-    await process_aristarch(message=message, state=state)
+    await process_aristarch(message=message, state=state, bot=bot)
 
 
 

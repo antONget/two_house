@@ -33,7 +33,7 @@ class UsersFSM(StatesGroup):
 
 
 @router.message(CommandStart())
-async def process_start_command(message: Message,  state: FSMContext):
+async def process_start_command(message: Message,  state: FSMContext, bot: Bot):
     logging.info(f'process_start_command')
     #await message.answer(text='Приветствие и краткий рассказ для чего нужен бот')
     #user_tg_id = [user.tg_id for user in await rq.get_users()]
@@ -54,7 +54,7 @@ async def process_start_command(message: Message,  state: FSMContext):
         logging.info(f'current_state = {current_state}')
 
     else:
-        await process_aristarch(message=message, state=state, bot=Bot)
+        await process_aristarch(message=message, state=state, bot=bot)
 
 @router.message(F.text.startswith('дом '))
 async def set_house(message: Message, state: FSMContext):
