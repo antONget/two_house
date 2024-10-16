@@ -9,7 +9,7 @@ from aiogram.types import ReplyKeyboardRemove
 from handlers.registration_handlers import RegistrationFSM, UsersFSM
 from filter.user_filter import validate_russian_phone_number
 from handlers.registration_handlers import process_aristarch
-
+from filter.user_filter import IsChatPrivate
 
 import keyboards.keyboards as kb
 import database.requests as rq
@@ -19,7 +19,7 @@ config: Config = load_config()
 
 
 router = Router()
-
+router.message.filter(IsChatPrivate())
 storage = MemoryStorage()
 
 import logging

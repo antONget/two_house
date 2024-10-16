@@ -6,7 +6,7 @@ from aiogram.fsm.state import State, default_state, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
-
+from filter.user_filter import IsChatPrivate
 
 
 import keyboards.keyboards as kb
@@ -14,6 +14,7 @@ import database.requests as rq
 
 
 router = Router()
+router.message.filter(IsChatPrivate())
 
 storage = MemoryStorage()
 
@@ -28,7 +29,6 @@ class RegistrationFSM(StatesGroup):
 
 class UsersFSM(StatesGroup):
     state_aristarch = State()
-
 
 
 
@@ -59,7 +59,7 @@ async def process_start_command(message: Message,  state: FSMContext, bot: Bot):
 @router.message(F.text.startswith('дом '))
 async def set_house(message: Message, state: FSMContext):
     logging.info(f'set_house')
-    await state.update_data(house = int(message.text.split(' ')[-1]))
+    await state.update_data(house=int(message.text.split(' ')[-1]))
     await message.answer(text=f"Ваш {message.text}?", reply_markup=kb.kb_yes_no())
 
 
@@ -70,7 +70,7 @@ async def yes(message: Message, state: FSMContext):
     current_state = await state.get_state()
     logging.info(f"yes --- current_state = {current_state}")
 
-    if current_state == None: # Если нет состояния, переходим в выбор ПОДЪЕЗДА
+    if not current_state: # Если нет состояния, переходим в выбор ПОДЪЕЗДА
         #await state.update_data(house = message.text) # Можно и без этого, тоьлко через меесадж.текст, но для примера
         data_ = await state.get_data()
         number_house = data_['house']

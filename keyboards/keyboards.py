@@ -7,6 +7,10 @@ import logging
 
 # Кнопки главной клавиатуры
 def kb_hause() -> ReplyKeyboardMarkup:
+    """
+    Клавиатура выводит номера домов
+    :return:
+    """
     logging.info(f'def kb_hause() -> ReplyKeyboardMarkup:')
     button_1 = KeyboardButton(text='дом 18')
     button_2 = KeyboardButton(text='дом 20')

@@ -9,14 +9,14 @@ from aiogram.types import ReplyKeyboardRemove
 from handlers.registration_handlers import RegistrationFSM, UsersFSM
 from filter.user_filter import validate_russian_phone_number
 from handlers.registration_handlers import process_aristarch
-
+from filter.user_filter import IsChatPrivate
 
 import keyboards.keyboards as kb
 import database.requests as rq
 
 
 router = Router()
-
+router.message.filter(IsChatPrivate())
 storage = MemoryStorage()
 
 import logging
@@ -38,13 +38,14 @@ class SearchFlatAutoFSM(StatesGroup):
 
 @router.message(F.text == 'Мой профиль')
 async def my_profile(message: Message, state: FSMContext):
+    """
+    Обработка нажатия клавиши 'Мой профиль'
+    :param message:
+    :param state:
+    :return:
+    """
     logging.info(f'my_profile')
     data = await rq.get_one_user(tg_id=message.chat.id)
-    logging.info(f'data = {data}')
-
-
-
-
     await message.answer(text=
                          f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
                          f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
