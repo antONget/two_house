@@ -113,7 +113,7 @@ async def get_Users() -> Users:
         return await session.scalars(select(Users))
 
 
-async def del_user(tg_id):
+async def del_user(tg_id: int) -> None:
     async with async_session() as session:
         user = await session.scalar(select(Users).where(Users.tg_id == tg_id))
         if user:

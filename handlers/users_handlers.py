@@ -114,6 +114,7 @@ async def process_add_phone(message: Message, state: FSMContext):
     await rq.set_data_to_profile(tg_id=message.chat.id, name_column='phone', current_value=phone)
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
     await state.clear()
+    await state.set_state(state=None)
     await my_profile(message=message, state=state)
 
 @router.message(SetProfileFSM.state_set_auto1)
@@ -123,7 +124,7 @@ async def process_add_auto1(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
     await my_profile(message=message, state=state)
-
+    await state.set_state(state=None)
 
 @router.message(SetProfileFSM.state_set_auto2)
 async def process_add_auto2(message: Message, state: FSMContext):
@@ -132,6 +133,7 @@ async def process_add_auto2(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
     await my_profile(message=message, state=state)
+    await state.set_state(state=None)
 
 @router.message(SetProfileFSM.state_set_fullname)
 async def process_add_fullname(message: Message, state: FSMContext):
@@ -140,6 +142,7 @@ async def process_add_fullname(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
     await my_profile(message=message, state=state)
+    await state.set_state(state=None)
 
 
 @router.message(lambda message: message.text in ['Новости', 'Справочник'])
@@ -359,3 +362,4 @@ async def process_capture_change_guide_news(message: Message, bot: Bot, state: F
                          )
         else:
             await message.answer(text='По вашему запросу данные не найдены')
+    await state.set_state(state=None)

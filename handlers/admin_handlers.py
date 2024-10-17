@@ -45,7 +45,12 @@ async def del_user_in_admin_modetg(message: Message, bot: Bot):
     logging.info(f"user_channel_status.status = {user_channel_status.status}")
     # Проверил свой статус - 'member'
     if user_channel_status.status != 'left':
-        tg_id = message.text.split(' ')[-1]
+        try:
+            tg_id = int(message.text.split(' ')[-1])
+        except:
+            await message.answer(text=f"id пользователя в команде /del_user должно быть целым числом, например:"
+                                      f" /del_user 843554518")
+            return
         await rq.del_user(tg_id=tg_id)
         await message.answer(text=f"Пользователь с tg_id = {tg_id} удален из базы данных")
     else:

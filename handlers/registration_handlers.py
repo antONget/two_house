@@ -85,7 +85,7 @@ async def yes(message: Message, state: FSMContext):
         number_doorway = data_['doorway']
         await state.set_state(RegistrationFSM.state_set_stage)
         await message.answer(text=f"№ дома {number_house}\n№ подъезда {number_doorway}\nВыберете этаж", reply_markup=kb.kb_stage())
-        logging.info(f"yes --- elif current_state == RegistrationFSM.state_set_doorway: --- data_ = {data_} --- current_state = {current_state}")
+        # logging.info(f"yes --- elif current_state == RegistrationFSM.state_set_doorway: --- data_ = {data_} --- current_state = {current_state}")
 
     elif current_state == RegistrationFSM.state_set_stage:
 
@@ -174,7 +174,8 @@ async def set_flat(message: Message, state: FSMContext):
     if message.text in map(str, list(range(1, 411))):
         await state.update_data(flat = int(message.text.split(' ')[0]))
 
-        await message.answer(text=f"№ дома {number_house}\n№ подъезда {number_doorway}\n№ этажа {number_stage}\nНомер квартиры {message.text}", reply_markup=kb.kb_no_send())
+        await message.answer(text=f"№ дома {number_house}\n№ подъезда {number_doorway}\n№ этажа {number_stage}\nНомер квартиры {message.text}",
+                             reply_markup=kb.kb_no_send())
 
         logging.info(f'set_flat --- state.get_data() = {await state.get_data()}')
         await state.set_state(RegistrationFSM.state_end_registration)
