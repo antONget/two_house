@@ -4,7 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from config_data.config import Config, load_config
-from handlers import registration_handlers, other_handlers, users_handlers, admin_handlers
+from handlers import registration_handlers, other_handlers, users_handlers, admin_handlers, mailing
 from handlers.registration_handlers import storage
 from database.models import async_main
 
@@ -22,8 +22,8 @@ async def main():
 
     logging.basicConfig(
         level=logging.INFO,
-        filename="py_log.log",
-        filemode='w',
+        # filename="py_log.log",
+        # filemode='w',
         format='%(filename)s:%(lineno)d #%(levelname)-8s '
                '[%(asctime)s] - %(name)s - %(message)s')
 
@@ -41,6 +41,7 @@ async def main():
     dp.include_router(registration_handlers.router)
     dp.include_router(users_handlers.router)
     dp.include_router(admin_handlers.router)
+    dp.include_router(mailing.router)
     dp.include_router(other_handlers.router)
 
     @dp.error()

@@ -155,52 +155,56 @@ async def process_show_guide_news(message: Message, bot: Bot, state: FSMContext)
     if not await rq.get_one_user(tg_id=message.chat.id):
         await hrh.process_start_command(message=message, state=state, bot=bot)
         return
-    data_guide = await rq.get_guide_news(1)
-    data_news = await rq.get_guide_news(2)
-    logging.info(f"data_guide = {data_guide} --- data_news = {data_news} --- message.chat.id = {message.chat.id}")
-
-
-    if message.text == 'Справочник':
-        if data_guide['photo']:
-            if data_guide['text']:# если есть фотография и текст
-                await bot.send_photo(chat_id=message.chat.id, photo=data_guide['photo'], caption=data_guide['text'])
-            else: # если есть только фотография
-                await bot.send_photo(chat_id=message.chat.id, photo=data_guide['photo'])
-        else:
-            if data_guide ['text']: # если есть только текст
-                await message.answer(text=data_guide['text'])
-            else: # если нет ничего
-                await message.answer(text='В разделе "Справочник" нет информации')
-
-
-    if message.text == 'Новости':
-        if data_news['photo']:
-            if data_news['text']:# если есть фотография и текст
-                await bot.send_photo(chat_id=message.chat.id, photo=data_news['photo'], caption=data_news['text'])
-            else: # если есть только фотография
-                await bot.send_photo(chat_id=message.chat.id, photo=data_news['photo'])
-        else:
-            if data_news ['text']: # если есть только текст
-                await message.answer(text=data_news['text'])
-            else: # если нет ничего
-                await message.answer(text='В разделе "Новости" нет информации')
-
     id_group = await rq.get_id_group()
     user_channel_status = await bot.get_chat_member(chat_id=id_group, user_id=message.from_user.id)
+    if user_channel_status.status == 'left':
+        data_guide = await rq.get_guide_news(1)
+        data_news = await rq.get_guide_news(2)
+        logging.info(f"data_guide = {data_guide} --- data_news = {data_news} --- message.chat.id = {message.chat.id}")
+        if not data_guide or not data_news:
+            await message.answer(text='В разделе нет информации')
+            return
+        if message.text == 'Справочник':
+            if data_guide['photo']:
+                if data_guide['text']:# если есть фотография и текст
+                    await bot.send_photo(chat_id=message.chat.id, photo=data_guide['photo'], caption=data_guide['text'])
+                else: # если есть только фотография
+                    await bot.send_photo(chat_id=message.chat.id, photo=data_guide['photo'])
+            else:
+                if data_guide ['text']: # если есть только текст
+                    await message.answer(text=data_guide['text'])
+                else: # если нет ничего
+                    await message.answer(text='В разделе "Справочник" нет информации')
 
-    logging.info(f"user_channel_status.status = {user_channel_status.status}")
-    # Проверил свой статус - 'member'
-    if user_channel_status.status != 'left':
 
+        if message.text == 'Новости':
+            if data_news['photo']:
+                if data_news['text']:# если есть фотография и текст
+                    await bot.send_photo(chat_id=message.chat.id, photo=data_news['photo'], caption=data_news['text'])
+                else: # если есть только фотография
+                    await bot.send_photo(chat_id=message.chat.id, photo=data_news['photo'])
+            else:
+                if data_news ['text']: # если есть только текст
+                    await message.answer(text=data_news['text'])
+                else: # если нет ничего
+                    await message.answer(text='В разделе "Новости" нет информации')
+
+    # id_group = await rq.get_id_group()
+    # user_channel_status = await bot.get_chat_member(chat_id=id_group, user_id=message.from_user.id)
+    #
+    # logging.info(f"user_channel_status.status = {user_channel_status.status}")
+    # # Проверил свой статус - 'member'
+    # if user_channel_status.status != 'left':
+    else:
         if message.text == 'Новости':
             await message.answer(text='Хотите изменить контент в разделе?', reply_markup=kb.kb_inline_yes_no(line_name='news'))
 
         elif message.text == 'Справочник':
             await message.answer(text='Хотите изменить контент в разделе?', reply_markup=kb.kb_inline_yes_no(line_name='guide'))
 
-    else:
-        await message.answer(text='Функционал доступен только администраторам')
-        await process_aristarch(message=message, state=state, bot=bot)
+    # else:
+    #     await message.answer(text='Функционал доступен только администраторам')
+    #     await process_aristarch(message=message, state=state, bot=bot)
 
 
 

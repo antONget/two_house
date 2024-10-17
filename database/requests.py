@@ -22,15 +22,15 @@ async def get_one_user(tg_id: int) -> dict:
         data: Users = await session.scalar(select(Users).where(Users.tg_id == tg_id))
         dict_: dict = {}
         if data:
-            dict_ |= {'house': data.house}
-            dict_ |= {'doorway': data.doorway}
-            dict_ |= {'stage': data.stage}
-            dict_ |= {'flat': data.flat}
-            dict_ |= {'username': data.username}
-            dict_ |= {'fullname': data.fullname}
-            dict_ |= {'phone': data.phone}
-            dict_ |= {'auto1': data.auto1}
-            dict_ |= {'auto2': data.auto2}
+            dict_['house'] = data.house
+            dict_['doorway'] = data.doorway
+            dict_['stage'] = data.stage
+            dict_['flat'] = data.flat
+            dict_['username'] = data.username
+            dict_['fullname'] = data.fullname
+            dict_['phone'] = data.phone
+            dict_['auto1'] = data.auto1
+            dict_['auto2'] = data.auto2
         return dict_
 
 async def chek_in_user_tg_id(tg_id: int) -> bool:
@@ -52,16 +52,16 @@ async def set_data_to_profile(tg_id: int, name_column: str, current_value: str) 
     logging.info(f'set_data_to_profile {current_value}')
     async with async_session() as session:
         data: Users = await session.scalar(select(Users).where(Users.tg_id == tg_id))
-
-        if name_column == 'phone':
-            data.phone = current_value
-        elif name_column == 'auto1':
-            data.auto1 = current_value
-        elif name_column == 'auto2':
-            data.auto2 = current_value
-        elif name_column == 'fullname':
-            data.fullname = current_value
-        await session.commit()
+        if data:
+            if name_column == 'phone':
+                data.phone = current_value
+            elif name_column == 'auto1':
+                data.auto1 = current_value
+            elif name_column == 'auto2':
+                data.auto2 = current_value
+            elif name_column == 'fullname':
+                data.fullname = current_value
+            await session.commit()
 
 """
 async def set_data_to_profile_new_version(tg_id: int, column: Column, current_value: int, ) -> Users:
@@ -87,11 +87,11 @@ async def get_guide_news(id: int) -> dict:
     logging.info(f'get_guide_news')
     async with async_session() as session:
         data: GuideNews = await session.scalar(select(GuideNews).where(GuideNews.id == id))
-
         dict_: dict = {}
-        dict_ |= {'name_line': data.name_line}
-        dict_ |= {'text': data.text}
-        dict_ |= {'photo': data.photo}
+        if data:
+            dict_['name_line'] = data.name_line
+            dict_['text'] = data.text
+            dict_['photo'] = data.photo
 
         return dict_
 
@@ -107,10 +107,6 @@ async def set_change_guide_news(id: int, name_column: str, current_value: str) -
             data.photo = current_value
 
         await session.commit()
-
-async def get_Users() -> Users:
-    async with async_session() as session:
-        return await session.scalars(select(Users))
 
 
 async def del_user(tg_id: int) -> None:
