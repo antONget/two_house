@@ -6,10 +6,11 @@ from aiogram.fsm.state import State, default_state, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
-from handlers.registration_handlers import RegistrationFSM, UsersFSM
+from handlers import registration_handlers as hrh
 from filter.user_filter import validate_russian_phone_number
 from handlers.registration_handlers import process_aristarch
 from filter.user_filter import IsChatPrivate
+
 
 import keyboards.keyboards as kb
 import database.requests as rq
@@ -37,7 +38,7 @@ class SearchFlatAutoFSM(StatesGroup):
 
 
 @router.message(F.text == 'Мой профиль')
-async def my_profile(message: Message, state: FSMContext):
+async def my_profile(message: Message, state: FSMContext, bot: Bot):
     """
     Обработка нажатия клавиши 'Мой профиль'
     :param message:
@@ -45,6 +46,9 @@ async def my_profile(message: Message, state: FSMContext):
     :return:
     """
     logging.info(f'my_profile')
+    if not await rq.get_one_user(tg_id=message.chat.id):
+        await hrh.process_start_command(message=message, state=state, bot=bot)
+        return
     data = await rq.get_one_user(tg_id=message.chat.id)
     await message.answer(text=
                          f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
@@ -148,7 +152,9 @@ async def process_add_fullname(message: Message, state: FSMContext):
 @router.message(lambda message: message.text in ['Новости', 'Справочник'])
 async def process_show_guide_news(message: Message, bot: Bot, state: FSMContext):
     logging.info(f'process_show_guide_news')
-
+    if not await rq.get_one_user(tg_id=message.chat.id):
+        await hrh.process_start_command(message=message, state=state, bot=bot)
+        return
     data_guide = await rq.get_guide_news(1)
     data_news = await rq.get_guide_news(2)
     logging.info(f"data_guide = {data_guide} --- data_news = {data_news} --- message.chat.id = {message.chat.id}")
@@ -263,7 +269,9 @@ async def process_capture_change_guide_news(message: Message, bot: Bot, state: F
 @router.message(F.text == 'Поиск')
 async def process_search(message: Message, bot: Bot, state: FSMContext):
     logging.info(f'process_search')
-
+    if not await rq.get_one_user(tg_id=message.chat.id):
+        await hrh.process_start_command(message=message, state=state, bot=bot)
+        return
     # Проверка статуса пользователя
     id_group = await rq.get_id_group()
     user_channel_status = await bot.get_chat_member(chat_id=id_group, user_id=message.from_user.id) #message.chat.id

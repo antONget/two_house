@@ -20,17 +20,17 @@ async def get_one_user(tg_id: int) -> dict:
     logging.info(f'get_one_user')
     async with async_session() as session:
         data: Users = await session.scalar(select(Users).where(Users.tg_id == tg_id))
-
         dict_: dict = {}
-        dict_ |= {'house': data.house}
-        dict_ |= {'doorway': data.doorway}
-        dict_ |= {'stage': data.stage}
-        dict_ |= {'flat': data.flat}
-        dict_ |= {'username': data.username}
-        dict_ |= {'fullname': data.fullname}
-        dict_ |= {'phone': data.phone}
-        dict_ |= {'auto1': data.auto1}
-        dict_ |= {'auto2': data.auto2}
+        if data:
+            dict_ |= {'house': data.house}
+            dict_ |= {'doorway': data.doorway}
+            dict_ |= {'stage': data.stage}
+            dict_ |= {'flat': data.flat}
+            dict_ |= {'username': data.username}
+            dict_ |= {'fullname': data.fullname}
+            dict_ |= {'phone': data.phone}
+            dict_ |= {'auto1': data.auto1}
+            dict_ |= {'auto2': data.auto2}
         return dict_
 
 async def chek_in_user_tg_id(tg_id: int) -> bool:
