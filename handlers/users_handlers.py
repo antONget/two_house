@@ -308,10 +308,10 @@ async def process_push_clb_flat_or_auto(clb: CallbackQuery, state: FSMContext):
 @router.message(SearchFlatAutoFSM.state_search_auto)
 async def process_capture_change_guide_news(message: Message, bot: Bot, state: FSMContext):
     logging.info(f'process_capture_change_guide_news')
-    list_id_user = [user.tg_id for user in await rq.get_Users()]
-    list_flat_user = [user.flat for user in await rq.get_Users()]
-    list_auto1_user = [user.auto1 for user in await rq.get_Users()]
-    list_auto2_user = [user.auto2 for user in await rq.get_Users()]
+    list_id_user = [user.tg_id for user in await rq.get_users()]
+    list_flat_user = [user.flat for user in await rq.get_users()]
+    list_auto1_user = [user.auto1 for user in await rq.get_users()]
+    list_auto2_user = [user.auto2 for user in await rq.get_users()]
 
 
     input_data = message.text
