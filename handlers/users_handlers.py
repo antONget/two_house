@@ -93,7 +93,7 @@ async def process_set_state_to_add_someone(clb: CallbackQuery, state: FSMContext
 
 
 @router.message(SetProfileFSM.state_set_phone)
-async def process_add_phone(message: Message, state: FSMContext):
+async def process_add_phone(message: Message, state: FSMContext, bot: Bot):
     logging.info(f'process_add_phone')
 
     # если номер телефона отправлен через кнопку "Поделится"
@@ -119,33 +119,33 @@ async def process_add_phone(message: Message, state: FSMContext):
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
     await state.clear()
     await state.set_state(state=None)
-    await my_profile(message=message, state=state)
+    await my_profile(message=message, state=state, bot=bot)
 
 @router.message(SetProfileFSM.state_set_auto1)
-async def process_add_auto1(message: Message, state: FSMContext):
+async def process_add_auto1(message: Message, state: FSMContext, bot: Bot):
     logging.info(f'process_add_auto1 --- await state.get_state() = {await state.get_state()}')
     await rq.set_data_to_profile(tg_id=message.chat.id, name_column='auto1', current_value=message.text)
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
-    await my_profile(message=message, state=state)
+    await my_profile(message=message, state=state, bot=bot)
     await state.set_state(state=None)
 
 @router.message(SetProfileFSM.state_set_auto2)
-async def process_add_auto2(message: Message, state: FSMContext):
+async def process_add_auto2(message: Message, state: FSMContext, bot: Bot):
     logging.info(f'process_add_auto2')
     await rq.set_data_to_profile(tg_id=message.chat.id, name_column='auto2', current_value=message.text)
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
-    await my_profile(message=message, state=state)
+    await my_profile(message=message, state=state, bot=bot)
     await state.set_state(state=None)
 
 @router.message(SetProfileFSM.state_set_fullname)
-async def process_add_fullname(message: Message, state: FSMContext):
+async def process_add_fullname(message: Message, state: FSMContext, bot: Bot):
     logging.info(f'process_add_fullname')
     await rq.set_data_to_profile(tg_id=message.chat.id, name_column='fullname', current_value=message.text)
     await state.clear()
     await message.answer(text='Благодарю!', reply_markup=kb.kb_aristarch())
-    await my_profile(message=message, state=state)
+    await my_profile(message=message, state=state, bot=bot)
     await state.set_state(state=None)
 
 
