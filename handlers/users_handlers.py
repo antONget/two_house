@@ -252,18 +252,26 @@ async def process_capture_change_guide_news(message: Message, bot: Bot, state: F
     elif await state.get_state() == ChangeGuideNewsFSM.state_set_news:
         id_table_guide_news = 2
 
-    if message.text:
+    # если только текст
+    if message.text and not message.photo:
         text = message.text
         await rq.set_change_guide_news(id=id_table_guide_news, name_column='text', current_value=text)
+        await rq.set_change_guide_news(id=id_table_guide_news, name_column='photo', current_value='')
 
-    if message.photo:
+    # если только фото
+    elif message.photo and not message.text:
         photo = message.photo[-1].file_id
         await rq.set_change_guide_news(id=id_table_guide_news, name_column='photo', current_value=photo)
-        if message.caption:
-            text = message.caption
-            await rq.set_change_guide_news(id=id_table_guide_news, name_column='text', current_value=text)
+        await rq.set_change_guide_news(id=id_table_guide_news, name_column='text', current_value='')
 
-    await message.answer(text='Контент в разделе обнавлен')
+    # если и текст и фото
+    elif message.photo and message.text:
+        photo = message.photo[-1].file_id
+        text = message.text
+        await rq.set_change_guide_news(id=id_table_guide_news, name_column='photo', current_value=photo)
+        await rq.set_change_guide_news(id=id_table_guide_news, name_column='text', current_value=text)
+
+    await message.answer(text='Контент в разделе обновлен')
     await state.clear()
     await process_aristarch(message=message, state=state, bot=bot)
 

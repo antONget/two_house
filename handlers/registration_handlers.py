@@ -211,12 +211,12 @@ async def process_aristarch(message: Message, bot: Bot, state: FSMContext):
                             f"Также вы можете узнать важные события и новости.")
         #await message.answer(text='Аристарх Вениаминович слушает Вас', reply_markup=kb.kb_aristarch())
 
-    # После регистрации в группу отправляются данные о пользователе
-    data_id_group = await rq.get_id_group()
-    try:
-        await bot.send_message(chat_id=data_id_group, text=f"Пользователь @{message.from_user.username}/{message.chat.id} зарегистрировался в боте")
-    except:
-        pass
+        # После регистрации в группу отправляются данные о пользователе
+        data_id_group = await rq.get_id_group()
+        try:
+            await bot.send_message(chat_id=data_id_group, text=f"Пользователь @{message.from_user.username}/{message.chat.id} зарегистрировался в боте")
+        except:
+            pass
 
 
 
