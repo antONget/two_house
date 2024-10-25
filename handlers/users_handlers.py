@@ -306,72 +306,53 @@ async def process_push_clb_flat_or_auto(clb: CallbackQuery, state: FSMContext):
 
 @router.message(SearchFlatAutoFSM.state_search_flat)
 @router.message(SearchFlatAutoFSM.state_search_auto)
-async def process_capture_change_guide_news(message: Message, bot: Bot, state: FSMContext):
+async def process_answer_to_search(message: Message, bot: Bot, state: FSMContext):
     logging.info(f'process_capture_change_guide_news')
-    list_id_user = [user.tg_id for user in await rq.get_users()]
-    list_flat_user = [user.flat for user in await rq.get_users()]
-    list_auto1_user = [user.auto1 for user in await rq.get_users()]
-    list_auto2_user = [user.auto2 for user in await rq.get_users()]
+    list_id_user_flat = [[user.tg_id, user.flat] for user in await rq.get_users()]
+    list_id_auto = [[user.tg_id, user.auto1, user.auto2] for user in await rq.get_users()]
 
 
     input_data = message.text
-
+    flag = True
     if await state.get_state() == SearchFlatAutoFSM.state_search_flat:
-        if int(input_data) in list_flat_user:
-            index_flat = list_flat_user.index(int(input_data))
-            tg_id = list_id_user[index_flat]
-            data = await rq.get_one_user(tg_id)
-            logging.info(f'data = {data}')
-            await message.answer(text=
-                         f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
-                         f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
-                         f"№ этажа - {data['stage'] if data['stage'] else 'нет данных'}\n"
-                         f"№ квартиры - {data['flat'] if data['flat'] else 'нет данных'}\n"
-                         f"Ссылка на пользователя - {data['username'] if data['username'] else 'нет данных'}\n"
-                         f"ФИО - {data['fullname'] if data['fullname'] else 'нет данных'}\n"
-                         f"Телефон - {data['phone'] if data['phone'] else 'нет данных'}\n"
-                         f"1 Автомобиль - {data['auto1'] if data['auto1'] else 'нет данных'}\n"
-                         f"2 Автомобиль - {data['auto2'] if data['auto2'] else 'нет данных'}\n",
-                         reply_markup=kb.kb_inline_set_my_profile()
-                         )
-        else:
+        for item in list_id_user_flat:
+            if int(input_data) == item[1]:
+                flag = False
+                data = await rq.get_one_user(item[0])
+                logging.info(f'data = {data}')
+                await message.answer(text=
+                             f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
+                             f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
+                             f"№ этажа - {data['stage'] if data['stage'] else 'нет данных'}\n"
+                             f"№ квартиры - {data['flat'] if data['flat'] else 'нет данных'}\n"
+                             f"Ссылка на пользователя - {data['username'] if data['username'] else 'нет данных'}\n"
+                             f"ФИО - {data['fullname'] if data['fullname'] else 'нет данных'}\n"
+                             f"Телефон - {data['phone'] if data['phone'] else 'нет данных'}\n"
+                             f"1 Автомобиль - {data['auto1'] if data['auto1'] else 'нет данных'}\n"
+                             f"2 Автомобиль - {data['auto2'] if data['auto2'] else 'нет данных'}\n",
+                             reply_markup=kb.kb_inline_set_my_profile()
+                             )
+        if flag:
             await message.answer(text='По вашему запросу данные не найдены')
 
     elif await state.get_state() == SearchFlatAutoFSM.state_search_auto:
-        if input_data in list_auto1_user:
-            index_auto = list_auto1_user.index(input_data)
-            tg_id = list_id_user[index_auto]
-            data = await rq.get_one_user(tg_id)
-            logging.info(f'data = {data}')
-            await message.answer(text=
-                         f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
-                         f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
-                         f"№ этажа - {data['stage'] if data['stage'] else 'нет данных'}\n"
-                         f"№ квартиры - {data['flat'] if data['flat'] else 'нет данных'}\n"
-                         f"Ссылка на пользователя - {data['username'] if data['username'] else 'нет данных'}\n"
-                         f"ФИО - {data['fullname'] if data['fullname'] else 'нет данных'}\n"
-                         f"Телефон - {data['phone'] if data['phone'] else 'нет данных'}\n"
-                         f"1 Автомобиль - {data['auto1'] if data['auto1'] else 'нет данных'}\n"
-                         f"2 Автомобиль - {data['auto2'] if data['auto2'] else 'нет данных'}\n",
-                         reply_markup=kb.kb_inline_set_my_profile()
-                         )
-        elif input_data in list_auto1_user:
-            index_auto = list_auto1_user.index(input_data)
-            tg_id = list_id_user[index_auto]
-            data = await rq.get_one_user(tg_id)
-            logging.info(f'data = {data}')
-            await message.answer(text=
-                         f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
-                         f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
-                         f"№ этажа - {data['stage'] if data['stage'] else 'нет данных'}\n"
-                         f"№ квартиры - {data['flat'] if data['flat'] else 'нет данных'}\n"
-                         f"Ссылка на пользователя - {data['username'] if data['username'] else 'нет данных'}\n"
-                         f"ФИО - {data['fullname'] if data['fullname'] else 'нет данных'}\n"
-                         f"Телефон - {data['phone'] if data['phone'] else 'нет данных'}\n"
-                         f"1 Автомобиль - {data['auto1'] if data['auto1'] else 'нет данных'}\n"
-                         f"2 Автомобиль - {data['auto2'] if data['auto2'] else 'нет данных'}\n",
-                         reply_markup=kb.kb_inline_set_my_profile()
-                         )
-        else:
+        for item in list_id_auto:
+            if input_data == item[1] or input_data == item[2]:
+                flag = False
+                data = await rq.get_one_user(tg_id=item[0])
+                logging.info(f'data = {data}')
+                await message.answer(text=
+                             f"№ дома - {data['house'] if data['house'] else 'нет данных'}\n"
+                             f"№ подъезда - {data['doorway'] if data['doorway'] else 'нет данных'}\n"
+                             f"№ этажа - {data['stage'] if data['stage'] else 'нет данных'}\n"
+                             f"№ квартиры - {data['flat'] if data['flat'] else 'нет данных'}\n"
+                             f"Ссылка на пользователя - {data['username'] if data['username'] else 'нет данных'}\n"
+                             f"ФИО - {data['fullname'] if data['fullname'] else 'нет данных'}\n"
+                             f"Телефон - {data['phone'] if data['phone'] else 'нет данных'}\n"
+                             f"1 Автомобиль - {data['auto1'] if data['auto1'] else 'нет данных'}\n"
+                             f"2 Автомобиль - {data['auto2'] if data['auto2'] else 'нет данных'}\n",
+                             reply_markup=kb.kb_inline_set_my_profile()
+                             )
+        if flag:
             await message.answer(text='По вашему запросу данные не найдены')
     await state.set_state(state=None)
