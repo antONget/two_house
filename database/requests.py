@@ -6,7 +6,7 @@ from aiogram.types import Message
 import logging
 
 
-async def add_new_user(data:dict):
+async def add_new_user(data: dict):
     logging.info(f'add_new_user')
     async with async_session() as session:
         user = await session.scalar(select(Users).where(Users.tg_id == int(data["tg_id"])))
